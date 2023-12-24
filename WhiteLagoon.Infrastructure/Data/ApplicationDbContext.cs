@@ -95,15 +95,18 @@ namespace WhiteLagoon.Infrastructure.Data
                     Villa_Number = 203,
                     VillaId = 2
 
-                }, new VillaNumber
+                }, 
+                new VillaNumber
                 {
                     Villa_Number = 301,
                     VillaId = 3
-                }, new VillaNumber
+                }, 
+                new VillaNumber
                 {
                     Villa_Number = 302,
                     VillaId = 3
-                }, new VillaNumber
+                }, 
+                new VillaNumber
                 {
                     Villa_Number = 303,
                     VillaId = 3
