@@ -26,8 +26,8 @@ namespace WhiteLagoon.Web.Controllers
         {   
             if(ModelState.IsValid)
             {
-                _villaRepo.Add(obj);
-                _villaRepo.Save();
+                _unitOfWork.Villa.Add(obj);
+                _unitOfWork.Villa.Save();
                 TempData["success"] = "Villa has been created successfully.";
 
                 return RedirectToAction(nameof(Index));
@@ -36,7 +36,7 @@ namespace WhiteLagoon.Web.Controllers
         }
         public IActionResult Update(int villaId)
         {
-            Villa? obj  = _villaRepo.Get(x => x.Id == villaId);
+            Villa? obj  = _unitOfWork.Villa.Get(x => x.Id == villaId);
             if(obj == null)
             {
                 return RedirectToAction("Error", "Home");
@@ -48,8 +48,8 @@ namespace WhiteLagoon.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _villaRepo.Update(obj);
-                _villaRepo.Save();
+                _unitOfWork.Villa.Update(obj);
+                _unitOfWork.Villa.Save();
                 TempData["success"] = "Villa has been updated successfully.";
 
                 return RedirectToAction(nameof(Index));
@@ -58,7 +58,7 @@ namespace WhiteLagoon.Web.Controllers
         }
         public IActionResult Delete(int villaId)
         {
-            Villa? obj = _villaRepo.Get(x => x.Id == villaId);
+            Villa? obj = _unitOfWork.Villa.Get(x => x.Id == villaId);
             if (obj == null)
             {
                 return RedirectToAction("Error", "Home");
@@ -68,11 +68,11 @@ namespace WhiteLagoon.Web.Controllers
         [HttpPost]
         public IActionResult Delete(Villa obj)
         {
-            Villa? objFromDb = _villaRepo.Get(x => x.Id == obj.Id);
+            Villa? objFromDb = _unitOfWork.Villa.Get(x => x.Id == obj.Id);
             if (objFromDb is not null)
             {
-                _villaRepo.Remove(objFromDb);
-                _villaRepo.Save();
+                _unitOfWork.Villa.Remove(objFromDb);
+                _unitOfWork.Villa.Save();
                 TempData["success"] = "Villa has been deleted successfully.";
                 return RedirectToAction(nameof(Index));
             }

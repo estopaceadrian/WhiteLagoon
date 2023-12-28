@@ -8,7 +8,7 @@ namespace WhiteLagoon.Application.Common.Interfaces
 {
     public interface IUnitOfWork
     {
-        IVillaRepository VillaRepository { get; }
+        IVillaRepository Villa { get; }
 
     }
 }
