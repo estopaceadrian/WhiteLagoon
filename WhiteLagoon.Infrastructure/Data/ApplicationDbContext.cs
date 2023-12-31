@@ -13,6 +13,7 @@ namespace WhiteLagoon.Infrastructure.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<Villa> Villas { get; set; }
         public DbSet<VillaNumber> VillaNumbers { get; set; }
+        public DbSet<Amenity> Amenities { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // base.OnModelCreating(modelBuilder);
@@ -110,6 +111,31 @@ namespace WhiteLagoon.Infrastructure.Data
                 {
                     Villa_Number = 303,
                     VillaId = 3
+                });
+            modelBuilder.Entity<Amenity>().HasData(
+                new Amenity 
+                { 
+                    Id =1,
+                    VillaId=1 ,
+                    Name = "Private Pool",
+                },
+                new Amenity
+                {
+                    Id = 2,
+                    VillaId = 1,
+                    Name = "Wifi",
+                },
+                new Amenity
+                {
+                    Id = 3,
+                    VillaId = 1,
+                    Name = "Microwave",
+                },
+                new Amenity
+                {
+                    Id = 4,
+                    VillaId = 1,
+                    Name = "Billiards",
                 });
         }
     }
