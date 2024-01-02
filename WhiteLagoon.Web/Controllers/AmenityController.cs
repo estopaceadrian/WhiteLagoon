@@ -7,7 +7,8 @@ using WhiteLagoon.Infrastructure.Data;
 using WhiteLagoon.Web.ViewModels;
 
 namespace WhiteLagoon.Web.Controllers
-{
+{ 
+    //redo
     public class AmenityController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -79,6 +80,8 @@ namespace WhiteLagoon.Web.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+
+            //still get error
 
             AmenityVM.VillaList = _unitOfWork.Amenity.GetAll().Select(u => new SelectListItem
             {
