@@ -81,7 +81,7 @@ namespace WhiteLagoon.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ///still get error
+            ////still get error
 
             AmenityVM.VillaList = _unitOfWork.Amenity.GetAll().Select(u => new SelectListItem
             {
