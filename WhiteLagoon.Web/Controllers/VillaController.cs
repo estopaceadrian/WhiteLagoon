@@ -61,7 +61,7 @@ namespace WhiteLagoon.Web.Controllers
         [HttpPost]
         public IActionResult Update(Villa obj)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && obj.Id > 0)
             {
                 if (obj.Image != null)
                 {
@@ -105,9 +105,9 @@ namespace WhiteLagoon.Web.Controllers
             Villa? objFromDb = _unitOfWork.Villa.Get(x => x.Id == obj.Id);
             if (objFromDb is not null)
             {
-                if (!string.IsNullOrEmpty(obj.ImageUrl))
+                if (!string.IsNullOrEmpty(objFromDb.ImageUrl))
                 {
-                    var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, obj.ImageUrl.TrimStart('\\'));
+                    var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, objFromDb.ImageUrl.TrimStart('\\'));
                     if (System.IO.File.Exists(oldImagePath))
                     {
                         System.IO.File.Delete(oldImagePath);
