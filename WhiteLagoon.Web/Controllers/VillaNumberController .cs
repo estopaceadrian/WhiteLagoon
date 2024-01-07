@@ -48,12 +48,12 @@ namespace WhiteLagoon.Web.Controllers
             if (roomNumberExists)
             {
                 TempData["error"] = "The villa Number already exists.";
-                obj.VillaList = _unitOfWork.Villa.GetAll().Select(u => new SelectListItem
-                {
-                    Text = u.Name,
-                    Value = u.Id.ToString()
-                });
             }
+            obj.VillaList = _unitOfWork.Villa.GetAll().Select(u => new SelectListItem
+            {
+                Text = u.Name,
+                Value = u.Id.ToString()
+            });
             return View(obj);
         } 
         public IActionResult Update(int villaNumberId)

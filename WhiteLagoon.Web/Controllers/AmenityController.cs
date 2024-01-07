@@ -7,8 +7,7 @@ using WhiteLagoon.Infrastructure.Data;
 using WhiteLagoon.Web.ViewModels;
 
 namespace WhiteLagoon.Web.Controllers
-{ 
-    //redo
+{
     public class AmenityController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -18,14 +17,14 @@ namespace WhiteLagoon.Web.Controllers
         }
         public IActionResult Index()
         {
-            var amenities = _unitOfWork.Amenity.GetAll(includeProperties: "Amenity");
+            var amenities = _unitOfWork.Amenity.GetAll(includeProperties: "Villa");
             return View(amenities);
         }
         public IActionResult Create()
         {
             AmenityVM amenityVM = new()
             {
-                VillaList = _unitOfWork.Amenity.GetAll().Select(u => new SelectListItem
+                VillaList = _unitOfWork.Villa.GetAll().Select(u => new SelectListItem
                 {
                     Text = u.Name,
                     Value = u.Id.ToString()
@@ -35,13 +34,12 @@ namespace WhiteLagoon.Web.Controllers
         }
         [HttpPost]
         public IActionResult Create(AmenityVM obj)
-        {
-            
+        { 
             if(ModelState.IsValid)
             {
                 _unitOfWork.Amenity.Add(obj.Amenity);
                 _unitOfWork.Save();
-                TempData["success"] = "The Amenity has been created successfully.";
+                TempData["success"] = "The amenity has been created successfully.";
 
                 return RedirectToAction(nameof(Index));
             } 
@@ -49,69 +47,67 @@ namespace WhiteLagoon.Web.Controllers
             {
                 Text = u.Name,
                 Value = u.Id.ToString()
-            });
+            }); 
             return View(obj);
         } 
         public IActionResult Update(int amenityId)
         {
-            AmenityVM AmenityVM = new()
+            AmenityVM amenityVM = new()
             {
-                VillaList = _unitOfWork.Amenity.GetAll().Select(u => new SelectListItem
+                VillaList = _unitOfWork.Villa.GetAll().Select(u => new SelectListItem
                 {
                     Text = u.Name,
                     Value = u.Id.ToString()
                 }),
                 Amenity = _unitOfWork.Amenity.Get(u => u.Id== amenityId)
             };
-            if (AmenityVM.Amenity == null)
+            if (amenityVM.Amenity == null)
             {
                 return RedirectToAction("Error", "Home");
             }
-            return View(AmenityVM);
+            return View(amenityVM);
         }
         [HttpPost]
-        public IActionResult Update(AmenityVM AmenityVM)
+        public IActionResult Update(AmenityVM amenityVM)
         { 
             if (ModelState.IsValid)
             {
-                _unitOfWork.Amenity.Update(AmenityVM.Amenity);
+                _unitOfWork.Amenity.Update(amenityVM.Amenity);
                 _unitOfWork.Save();
-                TempData["success"] = "The Amenity has been updated successfully.";
+                TempData["success"] = "The amenity has been updated successfully.";
 
                 return RedirectToAction(nameof(Index));
             }
 
-            ////still get error
-
-            AmenityVM.VillaList = _unitOfWork.Amenity.GetAll().Select(u => new SelectListItem
+            amenityVM.VillaList = _unitOfWork.Villa.GetAll().Select(u => new SelectListItem
             {
                 Text = u.Name,
                 Value = u.Id.ToString()
             }); 
            
-            return View(AmenityVM);
+            return View(amenityVM);
         }
         public IActionResult Delete(int amenityId)
         {
-            AmenityVM AmenityVM = new()
+            AmenityVM amenityVM = new()
             {
-                VillaList = _unitOfWork.Amenity.GetAll().Select(u => new SelectListItem
+                VillaList = _unitOfWork.Villa.GetAll().Select(u => new SelectListItem
                 {
                     Text = u.Name,
                     Value = u.Id.ToString()
                 }),
                 Amenity = _unitOfWork.Amenity.Get(u => u.Id == amenityId)
             };
-            if (AmenityVM.Amenity == null)
+            if (amenityVM.Amenity == null)
             {
                 return RedirectToAction("Error", "Home");
             }
-            return View(AmenityVM);
+            return View(amenityVM);
         }
         [HttpPost]
-        public IActionResult Delete(AmenityVM AmenityVM)
+        public IActionResult Delete(AmenityVM amenityVM)
         {
-            Amenity? objFromDb = _unitOfWork.Amenity.Get(x => x.Id == AmenityVM.Amenity.Id);
+            Amenity? objFromDb = _unitOfWork.Amenity.Get(x => x.Id == amenityVM.Amenity.Id);
             if (objFromDb is not null)
             {
                 _unitOfWork.Amenity.Remove(objFromDb);
