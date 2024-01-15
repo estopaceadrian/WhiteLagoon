@@ -123,20 +123,13 @@ namespace WhiteLagoon.Web.Controllers
                         return LocalRedirect(loginVM.RedirectUrl);
                     }
                 }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid login attempt.");
+                }
             }
-
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error.Description);
-            }
-
-            registerVM.RoleList = _roleManager.Roles.Select(x => new SelectListItem
-            {
-                Text = x.Name,
-                Value = x.Name
-            });
-
-            return View(registerVM);
+              
+            return View(loginVM);
         }
     }
 }
