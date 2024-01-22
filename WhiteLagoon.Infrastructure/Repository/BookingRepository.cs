@@ -46,7 +46,7 @@ namespace WhiteLagoon.Infrastructure.Repository
             {
                 if (!string.IsNullOrEmpty(sessionId))
                 {
-                    bookingFromDb.StripeSessionId = paymentIntentId;
+                    bookingFromDb.StripeSessionId = sessionId;
                 }
                 if (!string.IsNullOrEmpty(paymentIntentId))
                 {

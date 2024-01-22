@@ -4,6 +4,7 @@ using WhiteLagoon.Application.Common.Interfaces;
 using WhiteLagoon.Infrastructure.Repository;
 using Microsoft.AspNetCore.Identity;
 using WhiteLagoon.Domain.Entities;
+using Stripe;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -19,7 +20,7 @@ builder.Services.Configure<IdentityOptions>(option =>
     option.Password.RequiredLength = 6;
 });
 var app = builder.Build();
-
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
