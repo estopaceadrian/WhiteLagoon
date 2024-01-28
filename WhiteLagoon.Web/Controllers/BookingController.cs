@@ -102,7 +102,7 @@ namespace WhiteLagoon.Web.Controllers
                 
                 if(session.PaymentStatus == "paid")
                 {
-                    _unitOfWork.Booking.UpdateStatus(bookingFromDb.Id, StaticDetail.StatusApproved);
+                    _unitOfWork.Booking.UpdateStatus(bookingFromDb.Id, StaticDetail.StatusApproved, 0);
                     _unitOfWork.Booking.UpdateStripePaymentID(bookingFromDb.Id, session.Id, session.PaymentIntentId);
                     _unitOfWork.Save();
                 }
@@ -116,6 +116,24 @@ namespace WhiteLagoon.Web.Controllers
             Booking bookingFromDb = _unitOfWork.Booking.Get(u => u.Id == bookingId,
              includeProperties: "User,Villa");
             return View(bookingFromDb);
+        }
+
+        private IActionResult AssignAvailableVillaNumberByVilla(int villaId)
+        {
+            List<int> availableVillaNumbers = new();
+
+            var villaNumbers = _unitOfWork.VillaNumber.GetAll(u => u.VillaId == villaId);
+            var checkedInVilla = _unitOfWork.Booking.GetAll(u => u.VillaId == villaId && u.Status == StaticDetail.StatusCheckedIn)
+                .Select(u => u.VillaNumber);
+
+            foreach(var villaNumber in villaNumbers)
+            {
+                if (!checkedInVilla.Contains(villaNumber.Villa_Number))
+                {
+                    availableVillaNumbers.Add(villaNumber.Villa_Number);
+                }
+            }
+            return availableVillaNumbers;
         }
 
 
