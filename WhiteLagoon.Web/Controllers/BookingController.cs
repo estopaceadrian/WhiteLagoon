@@ -115,10 +115,17 @@ namespace WhiteLagoon.Web.Controllers
         {
             Booking bookingFromDb = _unitOfWork.Booking.Get(u => u.Id == bookingId,
              includeProperties: "User,Villa");
+            if(bookingFromDb.VillaNumber==0 && bookingFromDb.Status == StaticDetail.StatusApproved)
+            {
+                var availableVillaNumber = assignAvailableVillaNumberByVilla(bookingFromDb.VillaId);
+
+                bookingFromDb.VillaNumbers = _unitOfWork.VillaNumber.GetAll(u => u.VillaId == bookingFromDb.VillaId
+                && availableVillaNumber.Any(x => x == u.Villa_Number)).ToList();
+            }
             return View(bookingFromDb);
         }
 
-        private IActionResult AssignAvailableVillaNumberByVilla(int villaId)
+        private List<int> assignAvailableVillaNumberByVilla(int villaId)
         {
             List<int> availableVillaNumbers = new();
 
