@@ -3,10 +3,10 @@
 $(document).ready(function () {
 	const urlParams = new URLSearchParams(window.location.search);
 	const status = urlParams.get('status');
-	loadDataTable();
+	loadDataTable(status);
 });
 
-function loadDataTable() {
+function loadDataTable(status) {
 	dataTable = $('#tblBookings').DataTable({
 		"ajax": {
 			url:'/booking/getall?status='+status

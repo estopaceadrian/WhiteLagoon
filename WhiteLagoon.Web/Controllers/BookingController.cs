@@ -189,7 +189,8 @@ namespace WhiteLagoon.Web.Controllers
                 var claimsIdentity = (ClaimsIdentity)User.Identity;
                 var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                objBookings = _unitOfWork.Booking.GetAll(u=> u.UserId == userId, includeProperties: "User,Villa");
+                objBookings = _unitOfWork.Booking
+                    .GetAll(u=> u.UserId == userId, includeProperties: "User,Villa");
             }
             if(!string.IsNullOrEmpty(status))
             {
