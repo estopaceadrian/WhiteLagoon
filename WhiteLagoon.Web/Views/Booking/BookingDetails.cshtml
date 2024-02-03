@@ -92,7 +92,7 @@
                     @if(Model.Status==StaticDetail.StatusApproved && User.IsInRole(StaticDetail.Role_Admin))
                     {
                         <div class="form-group pt-2 col-6">
-                            <label class="text-danger" asp-for="VillaNumber"> Actual Check-out Date</label>
+                            <label class="text-danger" asp-for="VillaNumber"> Villa Number</label>
                                 <select class="form-select" asp-for="VillaNumber">
                                     @foreach(var item in Model.VillaNumbers)
                                     {
