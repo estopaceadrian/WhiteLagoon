@@ -22,7 +22,7 @@ namespace WhiteLagoon.Web.Controllers
         public async Task<IActionResult> GetTotalBookingRadialChartData()
         {
             var totalBookings = _unitOfWork.Booking.GetAll(u => u.Status != StaticDetail.StatusPending
-            || u.Status==StaticDetail.StatusCancelled);
+            || u.Status == StaticDetail.StatusCancelled);
 
             var countByCurrentMonth = totalBookings.Count(u => u.BookingDate >= currentMonthStartDate &&
             u.BookingDate <= DateTime.Now);
@@ -30,19 +30,84 @@ namespace WhiteLagoon.Web.Controllers
             var countByPreviousMonth = totalBookings.Count(u => u.BookingDate >= previousMonthStartDate &&
             u.BookingDate <= currentMonthStartDate);
 
+            return Json(GetRadialCartDataModel(totalBookings.Count(), countByPreviousMonth, countByPreviousMonth));
+
+        }
+        public async Task<IActionResult> GetRegisteredUserChartData()
+        {
+            var totalUsers = _unitOfWork.User.GetAll();
+
+            var countByCurrentMonth = totalUsers.Count(u => u.CreatedAt >= currentMonthStartDate &&
+            u.CreatedAt <= DateTime.Now);
+
+            var countByPreviousMonth = totalUsers.Count(u => u.CreatedAt >= previousMonthStartDate &&
+            u.CreatedAt <= currentMonthStartDate);
+
+            return Json(GetRadialCartDataModel(totalUsers.Count(), countByPreviousMonth, countByPreviousMonth));
+        }
+        public async Task<IActionResult> GetRevenueChartData()
+        {
+            var totalBookings = _unitOfWork.Booking.GetAll(u => u.Status != StaticDetail.StatusPending
+            || u.Status == StaticDetail.StatusCancelled);
+
+            var totalRevenue = Convert.ToInt32(totalBookings.Sum(u => u.TotalCost));
+
+            var countByCurrentMonth = totalBookings.Where(u => u.BookingDate >= currentMonthStartDate &&
+            u.BookingDate <= DateTime.Now).Sum(u => u.TotalCost);
+
+            var countByPreviousMonth = totalBookings.Where(u => u.BookingDate >= previousMonthStartDate &&
+            u.BookingDate <= currentMonthStartDate).Sum(u => u.TotalCost);
+
+            return Json(GetRadialCartDataModel(totalRevenue, countByPreviousMonth, countByPreviousMonth));
+        }
+        public async Task<IActionResult> GetBookingPieChartData()
+        {
+            var totalBookings = _unitOfWork.Booking.GetAll(u => u.BookingDate >= DateTime.Now.AddDays(-30) &&
+            (u.Status != StaticDetail.StatusPending || u.Status == StaticDetail.StatusCancelled));
+
+            var customerWithOneBooking = totalBookings.GroupBy(b => b.UserId).Where(x => x.Count() == 1).Select(x => x.Key).ToList();
+
+            int bookingsByNewCustomer = customerWithOneBooking.Count();
+            int bookingsByReturningCustomer = totalBookings.Count() - bookingsByNewCustomer;
+
+            PieChartVM pieChartVM = new()
+            {
+                Labels = new string[] { "New Customer Bookings", "Returning Customer Bookings" },
+                Series = new decimal[] { bookingsByNewCustomer, bookingsByReturningCustomer },
+            };
+
+            return Json(pieChartVM);
+
+        }
+        public async Task<IActionResult> GetMemberAndBookingLineChartData()
+        {
+            var bookingData = _unitOfWork.Booking.GetAll(u => u.BookingDate >= DateTime.Now.AddDays(-30) &&
+            u.BookingDate.Date <= DateTime.Now)
+                .GroupBy(b => b.BookingDate.Date)
+                .Select(u => new { DateTime = u.Key, NewBookingCount = u.Count() });
+            var bookingData = _unitOfWork.Booking.GetAll(u => u.BookingDate >= DateTime.Now.AddDays(-30) &&
+            u.BookingDate.Date <= DateTime.Now)
+               .GroupBy(b => b.BookingDate.Date)
+               .Select(u => new { DateTime = u.Key, NewBookingCount = u.Count() });
+            return Json(bookingData);
+        }
+        private static RadialBarChartVM GetRadialCartDataModel(int totalCount, double currentMonthCount, double prevMonthCount)
+        {
             RadialBarChartVM radialBarChartVM = new();
 
             int increaseDecreaseRatio = 100;
-            if (countByPreviousMonth != 0)
+            if (prevMonthCount != 0)
             {
-                increaseDecreaseRatio = Convert.ToInt32((countByCurrentMonth - countByPreviousMonth) / countByPreviousMonth * 100);
+                increaseDecreaseRatio = Convert.ToInt32((currentMonthCount - prevMonthCount) / prevMonthCount * 100);
             }
-            radialBarChartVM.TotalCount = totalBookings.Count();
-            radialBarChartVM.CountInCurrentMonth = countByCurrentMonth;
-            radialBarChartVM.HasRatioIncreased = currentMonthStartDate > previousMonthStartDate;
+            radialBarChartVM.TotalCount = totalCount;
+            radialBarChartVM.CountInCurrentMonth = Convert.ToInt32(currentMonthCount);
+            radialBarChartVM.HasRatioIncreased = currentMonthCount > prevMonthCount;
             radialBarChartVM.Series = new int[] { increaseDecreaseRatio };
 
-            return Json(radialBarChartVM);
+            return radialBarChartVM;
         }
+
+
     }
 }
